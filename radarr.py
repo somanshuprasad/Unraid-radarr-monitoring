@@ -21,13 +21,13 @@ class radarr(object):
         return movie_list
 
     def store_movie_list(self,movie_name):
-        movie_list = self.read_movie_list()
+        movie_list = self._read_movie_list()
         movie_list.append(movie_name)
 
         out_file = open("movie_list.json", "w")
         json.dump(movie_list,out_file)
 
-    def read_movie_list(self):
+    def _read_movie_list(self):
         out_file = open("movie_list.json", "r")
         current_movie_list = json.load(out_file)
         return current_movie_list
