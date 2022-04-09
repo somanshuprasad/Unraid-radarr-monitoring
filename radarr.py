@@ -55,7 +55,7 @@ if __name__ == "__main__":
         # time.sleep(120)
         movies = radarr()
         movie_list = movies.scraping_imdb()
-        current_movie_list = movies.read_movie_list()
+        current_movie_list = movies._read_movie_list()
         new_list = list(set(movie_list) - set(current_movie_list))
 
         if len(new_list) != 0:
