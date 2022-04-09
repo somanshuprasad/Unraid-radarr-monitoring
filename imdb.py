@@ -24,7 +24,7 @@ class imdb(object):
         for media in soup.find_all(attrs={'class': "lister-item-header"}):
             row = {}
             row["title"] = (media.text.split("\n")[2])
-            row["imdb_id"] = media.a["href"].split(r"/")[-2]
+            row["imdbId"] = media.a["href"].split(r"/")[-2]
             media_list.append(row)
         
         return media_list
