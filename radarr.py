@@ -32,6 +32,8 @@ class radarr(object):
         movie_json_radarr = self._search(movie_json)
         if self.movie_found == False : return False # if movie not found in previous function, return false
         response = requests.post('http://10.88.111.22:7878/api/v3/movie', headers=self.headers, json=movie_json_radarr, verify=False)
+        
+        # Handling errors from adding to reader list
         if not response:
             print(response.json()[0]["errorMessage"])
             if response.json()[0]["errorMessage"] == "This movie has already been added":

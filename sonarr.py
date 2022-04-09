@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 class sonarr(object):
 
@@ -22,9 +23,15 @@ class sonarr(object):
     def add(self,series_name):
         series_json_sonarr = self._search(series_name)
         response = requests.post('http://10.88.111.22:8989/api/v3/series', headers=self.headers, json=series_json_sonarr, verify=False)
+
+        # Handling errors from adding to sonarr list
         if not response:
-            print("there was an error. result of error:", "\n" , response.text)
-            return False
+            for error in response.json():
+                if error.get("errorMessage") == "This series has already been added":
+                    return True
+            else:
+                print(f"{datetime.now()}: There was an error with adding the series {series_name}. result of error:", "\n" , response.text)
+                return False
         return True
 
 if __name__ == "__main__":
