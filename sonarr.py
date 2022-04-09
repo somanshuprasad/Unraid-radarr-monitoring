@@ -8,20 +8,20 @@ class sonarr(object):
     def _search(self,series_name):
         #making intial call to search the series
         res = requests.get(f"http://10.88.111.22:8989/api/v3/series/lookup?term={series_name}", headers=self.headers, verify=False)
-        series_json = res.json()[0]
+        series_json_sonarr = res.json()[0]
 
         # additional options
-        series_json["qualityProfileId"] = 4
-        series_json["rootFolderPath"] = '/media'
-        series_json["monitored"] = True
-        series_json["languageProfileId"] = 1
-        if "id" in series_json.keys(): del series_json["id"]
+        series_json_sonarr["qualityProfileId"] = 4
+        series_json_sonarr["rootFolderPath"] = '/media'
+        series_json_sonarr["monitored"] = True
+        series_json_sonarr["languageProfileId"] = 1
+        if "id" in series_json_sonarr.keys(): del series_json_sonarr["id"]
         
-        return series_json
+        return series_json_sonarr
 
     def add(self,series_name):
-        series_json = self._search(series_name)
-        response = requests.post('http://10.88.111.22:8989/api/v3/series', headers=self.headers, json=series_json, verify=False)
+        series_json_sonarr = self._search(series_name)
+        response = requests.post('http://10.88.111.22:8989/api/v3/series', headers=self.headers, json=series_json_sonarr, verify=False)
         if not response:
             print("there was an error. result of error:", "\n" , response.text)
             return False
@@ -39,8 +39,7 @@ if __name__ == "__main__":
 
         if len(new_list) != 0:
             for series_name in new_list:
-                series_json = series.search(series_name)
-                series.add(series_json)
+                series.add(series_name)
                 series.store_series_list(series_name)
 
             print(f"{'.'.join(new_list)} added")
