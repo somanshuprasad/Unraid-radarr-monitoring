@@ -31,12 +31,12 @@ def main():
     if len(new_titles) != 0:
         for media_name in new_titles:
             media_json = find_imdb_id(media_name,new_media_list)
-            media_type = imdb_scraper.identify_media(media_json["imdb_id"])
+            media_type = imdb_scraper.identify_media(media_json["imdbId"])
 
             if media_type == "series":
                 result = series.add(media_json["title"])
             else:
-                result = movie.add(media_json["title"])
+                result = movie.add(media_json)
             
             if result:
                 imdb_scraper.store_media_list(media_json)
