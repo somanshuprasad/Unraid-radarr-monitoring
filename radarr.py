@@ -26,6 +26,7 @@ class radarr(object):
         movie_json_radarr["qualityProfileId"] = 4
         movie_json_radarr["rootFolderPath"] = '/media'
         movie_json_radarr["monitored"] = True
+        movie_json_radarr["addOptions"] = {"searchForMovie": True}
         return movie_json_radarr
 
     def add(self,movie_json):
@@ -35,7 +36,6 @@ class radarr(object):
         
         # Handling errors from adding to reader list
         if not response:
-            print(response.json()[0]["errorMessage"])
             if response.json()[0]["errorMessage"] == "This movie has already been added":
                 return True
             else:
