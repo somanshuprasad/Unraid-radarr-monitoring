@@ -1,6 +1,4 @@
-.ipynb_checkpoints/radarr add movie-checkpoint.py
-.ipynb_checkpoints/test-checkpoint.ipynb
+.ipynb_checkpoints/*
+__pycache__/*
+myenv/*
 test.ipynb
-__pycache__/imdb.cpython-38.pyc
-__pycache__/radarr.cpython-38.pyc
-__pycache__/sonarr.cpython-38.pyc
