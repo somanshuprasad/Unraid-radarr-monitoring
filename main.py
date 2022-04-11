@@ -5,18 +5,11 @@ import time
 from random import randint
 from datetime import datetime
 
-def find_new_media(current_media_list,new_media_list):
-    new_title_list = [media["title"] for media in new_media_list]
-    current_title_list = [media["title"] for media in current_media_list]
+def find_new_media(current_media_list,new_id_list):
+    current_id_list = [media["imdbId"] for media in current_media_list]
+    new_ids = list(set(new_id_list) - set(current_id_list))
 
-    new_titles = list(set(new_title_list) - set(current_title_list))
-
-    return new_titles
-
-def find_imdb_id(title,media_list):
-    for media in reversed(media_list):
-        if media["title"] == title:
-            return media
+    return new_ids
 
 movie = radarr()
 series = sonarr()
@@ -24,16 +17,15 @@ imdb_scraper = imdb()
 
 def main():
     current_media_list = imdb_scraper.read_media_list()
-    new_media_list = imdb_scraper.scraping_imdb_list()
+    new_id_list = imdb_scraper.scraping_imdb_list()
 
-    new_titles = find_new_media(current_media_list,new_media_list)
+    new_ids = find_new_media(current_media_list,new_id_list)
 
-    if len(new_titles) != 0:
-        for media_name in new_titles:
-            media_json = find_imdb_id(media_name,new_media_list)
-            media_type = imdb_scraper.identify_media(media_json["imdbId"])
+    if len(new_ids) != 0:
+        for imdb_id in new_ids:
+            media_json = imdb_scraper.identify_media(imdb_id)
 
-            if media_type == "series":
+            if media_json["type"] == "series":
                 result = series.add(media_json["title"])
             else:
                 result = movie.add(media_json)

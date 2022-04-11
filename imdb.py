@@ -4,30 +4,28 @@ import json
 import time
 
 class imdb(object):
+    HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"}
 
     # Identify if media is TV show or movie
     def identify_media(self,media_id):
         url = fr"https://www.imdb.com/title/{media_id}/"
-        response = requests.get(url)
+        response = requests.get(url, headers=self.HEADERS)
         soup2 = BeautifulSoup(response.text,features="lxml")
-        is_series = "TV" in str(soup2.find_all("ul", {"role":"presentation"})[0])
+        title = soup2.find("h1",{"data-testid":"hero-title-block__title"}).text
+        media_type = "series" if "TV" in str(soup2.find("ul", {"role":"presentation"})) else "movie"
+        media_json = {"title":title, "imdbId":media_id, "type":media_type}
         
-        return "series" if is_series else "movie"
+        return media_json
 
     # Call and scrape imdb list
     def scraping_imdb_list(self):
         imdb_url = "https://www.imdb.com/list/ls500310832/"
-        imdb_response = requests.get(imdb_url)
+        imdb_response = requests.get(imdb_url, headers=self.HEADERS)
         soup = BeautifulSoup(imdb_response.text,features="lxml") 
-
-        media_list = []
-        for media in soup.find_all(attrs={'class': "lister-item-header"}):
-            row = {}
-            row["title"] = (media.text.split("\n")[2])
-            row["imdbId"] = media.a["href"].split(r"/")[-2]
-            media_list.append(row)
+        raw_list = json.loads(soup.find_all('script',type='application/ld+json')[0].string)
+        imdb_id_list = [imdb_id["url"].split(r"/")[-2] for imdb_id in raw_list["about"]["itemListElement"]]
         
-        return media_list
+        return imdb_id_list
 
     # append media list with new name
     def store_media_list(self,media_json):
