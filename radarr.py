@@ -16,7 +16,7 @@ class radarr(object):
             print(f"call for {movie_json['title']} had an error:\n{res.text}")
             self.movie_found = False
         elif len(res.json()) == 0:
-            print(f"{movie_json['title']} not found")
+            print(f"{datetime.now()}: {movie_json['title']} not found")
             self.movie_found = False
             return
 
