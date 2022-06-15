@@ -1,4 +1,5 @@
 import requests
+from requests.adapters import HTTPAdapter, Retry
 from bs4 import BeautifulSoup
 import json
 import time
@@ -8,11 +9,17 @@ class imdb(object):
 
     # Identify if media is TV show or movie
     def identify_media(self,media_id):
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=1, status_forcelist=[429,500,502,503,504])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+
         url = fr"https://www.imdb.com/title/{media_id}/"
-        response = requests.get(url, headers=self.HEADERS)
+        response = s.get(url, headers=self.HEADERS)
+
+
         soup2 = BeautifulSoup(response.text,features="lxml")
         title = soup2.find("h1",{"data-testid":"hero-title-block__title"}).text
-        media_type = "series" if "TV" in str(soup2.find("ul", {"role":"presentation"})) else "movie"
+        media_type = "series" if "TV" in str(soup2.find_all("title")) else "movie"
         media_json = {"title":title, "imdbId":media_id, "type":media_type}
         
         return media_json

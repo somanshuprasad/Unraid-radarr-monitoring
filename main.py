@@ -36,8 +36,8 @@ def main():
 
 
 if __name__ == "__main__":
+    print("started running the app")
     
     while True:
         main()
-        print("started running the app")
         time.sleep(randint(10,120))
