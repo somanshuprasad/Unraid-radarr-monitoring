@@ -1,9 +1,11 @@
+from distutils.log import error
 from sonarr import sonarr
 from imdb import imdb
 from radarr import radarr
 import time
 from random import randint
 from datetime import datetime
+import traceback
 
 def find_new_media(current_media_list,new_id_list):
     current_id_list = [media["imdbId"] for media in current_media_list]
@@ -38,6 +40,22 @@ def main():
 if __name__ == "__main__":
     print("started running the app")
     
+    consecutive_error_count = 0
     while True:
-        main()
-        time.sleep(randint(10,120))
+        try:
+            main()
+            consecutive_error_count = 0
+            time.sleep(randint(10,120))
+            
+        except Exception:
+            consecutive_error_count += 1 # Keep track of how many times error happens
+            if consecutive_error_count == 1:
+                print(f"Exception on {datetime.now()}: {traceback.print_exc()}")
+            else:
+                print(f"above error ran {consecutive_error_count} times")
+            
+            if consecutive_error_count >= 20: # If error happens too many times, stop
+                print(f"Too many errors in a row. exiting at {datetime.now()}")
+                exit()
+            
+            time.sleep()
