@@ -58,4 +58,4 @@ if __name__ == "__main__":
                 print(f"Too many errors in a row. exiting at {datetime.now()}")
                 exit()
             
-            time.sleep()
+            time.sleep(5*60)
