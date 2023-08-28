@@ -19,7 +19,7 @@ class imdb(object):
 
 
         soup2 = BeautifulSoup(response.text,features="lxml")
-        title = soup2.find("h1",{"data-testid":"hero-title-block__title"}).text
+        title = soup2.find("h1",{"data-testid":"hero__pageTitle"}).text
         media_type = "series" if "TV" in str(soup2.find_all("title")) else "movie"
         media_json = {"title":title, "imdbId":media_id, "type":media_type}
         
